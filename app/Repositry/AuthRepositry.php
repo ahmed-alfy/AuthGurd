@@ -31,7 +31,11 @@ class AuthRepositry implements AuthInterface{
     }
 
     public function sendEmail($user){
+        try{
         Mail::to($user->email)->send(new VerificationEmail($user));
+        }catch(\Exception $e){
+            return $e->getMessage();
+        }
     }
 
     public function register($validator){

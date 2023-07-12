@@ -1,11 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminDashboard\AdminNotificationController;
-use App\Http\Controllers\Auth\{
-    AdminAuthController,
-    ClientAuthController,
-    WorkerAuthController,
-};
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Posts\PostController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -29,37 +25,15 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::middleware('api')->prefix('auth')->group(function(){
 
-    Route::controller(AdminAuthController::class)->prefix('admin')->group(function(){
-        Route::post('/login',  'login');
-        Route::post('/register',  'register');
-        Route::post('/logout', 'logout');
-        Route::post('/refresh', 'refresh');
-        Route::get('/user-profile', 'userProfile');
-        Route::get('/verify/{email:email}', 'verify')->name('verifyAdmin');
-
-    });
-
-
-
-    Route::controller(WorkerAuthController::class)->prefix('worker')->group(function(){
-        Route::post('/login',  'login');
-        Route::post('/register',  'register');
-        Route::post('/logout', 'logout');
-        Route::post('/refresh', 'refresh');
-        Route::get('/user-profile', 'userProfile');
-        Route::get('/verify/{email:email}', 'verify')->name('verifyWorker');
-
-    });
-
-
-    Route::controller(ClientAuthController::class)->prefix('client')->group(function(){
-        Route::post('/login',  'login');
-        Route::post('/register',  'register');
-        Route::post('/logout', 'logout');
-        Route::post('/refresh', 'refresh');
-        Route::get('/user-profile', 'userProfile');
-        Route::get('/verify/{email:email}', 'verify')->name('verifyClient');
-
+    Route::whereIn('guard', ['admin', 'worker', 'client'])->group(function () {
+        Route::controller(AuthController::class)->prefix('{guard}')->group(function(){
+            Route::post('/login',  'login');
+            Route::post('/register',  'register');
+            Route::post('/logout', 'logout');
+            Route::post('/refresh', 'refresh');
+            Route::get('/user-profile', 'userProfile');
+            Route::get('/verify/{email:email}', 'verify')->name('verifyAdmin');
+        });
     });
 
 

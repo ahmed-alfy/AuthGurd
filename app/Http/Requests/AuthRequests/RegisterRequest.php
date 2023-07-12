@@ -3,11 +3,12 @@
 namespace App\Http\Requests\AuthRequests;
 
 use App\Traits\GeneralTrait;
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class ClientRegisterRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     use GeneralTrait;
     /**
@@ -26,7 +27,7 @@ class ClientRegisterRequest extends FormRequest
     public function rules(): array
     {
 
-        // $guard = 'worker';
+        $guard = request()->route()->parameter('guard');
 
         return [
             'name' => 'required|string|between:2,100',
@@ -34,14 +35,14 @@ class ClientRegisterRequest extends FormRequest
             'phone' => "required|string",
             'photo' => "required|image|mimes:png,jpg",
             "location" => "required|string",
-            'email' => [
-                'required', 'string', 'email', 'max:100','unique:clients,email'
-            ],
+            // 'email' => [
+            //     'required', 'string', 'email', 'max:100','unique:admins,email'
+            // ],
 
-            // 'email' => [  Rule::unique($guard . 's')->where(function ($query) use ($guard) {
-            //         $query->where('email', request()->input('email'));
-            //     }),
-            // ]
+            'email' => [Rule::unique($guard . 's')->where(function ($query) use ($guard) {
+                    $query->where('email', request()->input('email'));
+                }),
+            ]
 
 
         ];
