@@ -10,7 +10,8 @@ use App\Repositry\PostRepositry;
 class PostController extends Controller
 {
     public function __construct(public PostInterface $postInterface){
-        $this->middleware(['ApiAuth:worker']);
+        // $this->middleware(['ApiAuth:worker']);
+        $this->middleware(['auth:worker']);
     }
 
     public function store(StoringPostRequest $request){

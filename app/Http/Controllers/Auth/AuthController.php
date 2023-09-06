@@ -18,7 +18,7 @@ class AuthController extends Controller
     public function __construct(protected AuthInterface $authInterface) {
 
         $guard = request()->route()->parameter('guard');
-        $this->middleware("ApiAuth:$guard", ['except' => ['login', 'register','verify']]);
+        $this->middleware("auth:$guard", ['except' => ['login', 'register','verify']]);
     }
     /**
      * Get a JWT via given credentials.
@@ -35,18 +35,12 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function register(RegisterRequest $request) {
-        // try{
+
         return $this->authInterface->register($request);
-        // }catch(\Exception $e){
-        //     return response()->json([
-        //         'status'=>202,
-        //         'errNum' => 'E0001',
-        //         'msg'=> 'this email is used before',
-        //     ],203);
-        //        }
+
     }
 
-    public function verify($email) {
+    public function verify($guard,$email) {
         return $this->authInterface->verfyEmail($email);
     }
 

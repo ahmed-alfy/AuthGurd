@@ -3,21 +3,22 @@
 namespace App\Http\Controllers\AdminDashboard;
 
 use App\Models\Admin;
-use App\Http\Controllers\Controller;
 use App\Traits\GeneralTrait;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class AdminNotificationController extends Controller
 {
     use GeneralTrait;
     public function __construct()
     {
-        $this->middleware('ApiAuth:admin');
+        $this->middleware('auth:admin');
     }
 
     public function index(){
-        $admin = Admin::find(auth('admin')->id());
-
-         return $this->returnData(200,'notifications',$admin->notifications,'admin\'s notifications');
+        $admin = Admin::find(Auth::guard('admin')->id());
+        // dd(Auth::guard('admin'));
+        return $this->returnData(200,'notifications',$admin->notifications,'admin\'s notifications');
 
     }
 
