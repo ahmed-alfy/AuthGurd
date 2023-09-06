@@ -59,6 +59,8 @@ class AuthRepositry implements AuthInterface{
 
         if(!$user){
             return $this->returnError(403,501,"This email is not registered");
+        }elseif($user->verified_at != NULL){
+            return $this->returnError(403,501,"This email is verified before");
         }
         $user->verified_at = now();
         $user->save();

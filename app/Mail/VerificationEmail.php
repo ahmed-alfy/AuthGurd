@@ -23,6 +23,7 @@ class VerificationEmail extends Mailable
         $this->user= $user;
 
 
+
     }
 
     /**
@@ -40,11 +41,13 @@ class VerificationEmail extends Mailable
      */
     public function content(): Content
     {
+        $guard = request()->route()->parameter('guard');
         return new Content(
             view: 'mail',
             with:[
                 'name' => $this->user->name,
-                'link' => env('APP_URL')."?email=".$this->user->email,
+                // 'link' => env('APP_URL')."?email=".$this->user->email,
+                'link' => env('APP_URL')."/api/auth/".$guard."/verify"."/".$this->user->email,
                 // 'link' => Route('verify',[$this->user->email]),
             ]
         );
