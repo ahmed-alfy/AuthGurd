@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Posts;
 
+use App\Models\Post;
+use App\Interface\PostInterface;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PostsRequests\StoringPostRequest;
-use App\Interface\PostInterface;
-use App\Repositry\PostRepositry;
 
 class PostController extends Controller
 {
@@ -14,6 +14,18 @@ class PostController extends Controller
         $this->middleware(['auth:worker']);
     }
 
+    public function index(){
+    $posts = Post::latest()->get();
+        return response()->json(['post\'s'=>$posts]);
+    }
+
+    public function approved(){
+        $posts = Post::latest()
+        ->where('status','approved')
+        ->get()
+        ->makeHidden('status');
+            return response()->json(['post\'s'=>$posts]);
+        }
     public function store(StoringPostRequest $request){
 
         try{

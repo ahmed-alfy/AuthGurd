@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminDashboard\AdminNotificationController;
+use App\Http\Controllers\AdminDashboard\PostStatusController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Posts\PostController;
 use Illuminate\Http\Request;
@@ -39,8 +40,16 @@ Route::middleware('api')->prefix('auth')->group(function(){
 
 });
 
-Route::controller(PostController::class)->prefix('worker')->middleware(['api'])->group(function(){
-    Route::post('/add_post',  'store');
+Route::controller(PostController::class)->prefix('worker/posts')->middleware(['api'])->group(function(){
+    Route::post('/add','store')->middleware('auth:worker');
+    Route::get('/show','index')->middleware('auth:admin');
+    Route::get('/approved','approved');
+
+});
+
+Route::controller(PostStatusController::class)->prefix('admin/posts')->middleware(['api'])->group(function(){
+    Route::post('/status','changeStatus');
+
 });
 
 Route::controller(AdminNotificationController::class)->prefix('Admin/notification')->middleware(['api'])->group(function(){
